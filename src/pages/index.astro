@@ -1,0 +1,67 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ProfileHero from "../components/ProfileHero.astro";
+import ArtworkCard from "../components/ArtworkCard.astro";
+import { artworks } from "../data/artworks";
+import { profile } from "../data/profile";
+
+const enVenta = artworks.filter((a) => a.status === "venta");
+const vendidas = artworks.filter((a) => a.status === "vendida");
+---
+
+<Layout>
+  <Header />
+  <ProfileHero />
+
+  <section id="sobre-mi" class="section container">
+    <p class="bio">{profile.bio}</p>
+  </section>
+
+  <section id="en-venta" class="section section--alt">
+    <div class="container">
+      <h2 class="section-title">Obras en venta</h2>
+      <p class="section-subtitle">
+        Consultá por cualquier obra directamente por WhatsApp: precio, envío y disponibilidad.
+      </p>
+      {enVenta.length > 0 ? (
+        <div class="grid">
+          {enVenta.map((artwork) => (
+            <ArtworkCard artwork={artwork} />
+          ))}
+        </div>
+      ) : (
+        <p class="muted" style="text-align:center;">
+          Por el momento no hay obras disponibles. ¡Volvé pronto!
+        </p>
+      )}
+    </div>
+  </section>
+
+  {vendidas.length > 0 && (
+    <section id="vendidas" class="section">
+      <div class="container">
+        <h2 class="section-title">Histórico de obras vendidas</h2>
+        <p class="section-subtitle">Un registro de obras que ya encontraron nuevo hogar.</p>
+        <div class="grid">
+          {vendidas.map((artwork) => (
+            <ArtworkCard artwork={artwork} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <Footer />
+</Layout>
+
+<style>
+  .bio {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+  }
+</style>

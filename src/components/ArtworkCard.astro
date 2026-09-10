@@ -1,0 +1,99 @@
+---
+import type { Artwork } from "../data/artworks";
+import { profile } from "../data/profile";
+import { whatsappLink } from "../lib/whatsapp";
+
+interface Props {
+  artwork: Artwork;
+}
+
+const { artwork } = Astro.props as Props;
+const isSold = artwork.status === "vendida";
+---
+
+<article class:list={["card", { "card--sold": isSold }]}>
+  <div class="card__image-wrap">
+    <img class="card__image" src={artwork.image} alt={artwork.title} loading="lazy" />
+    {isSold && <span class="badge card__badge">Vendida</span>}
+  </div>
+  <div class="card__body">
+    <h3 class="card__title">{artwork.title}</h3>
+    <p class="card__meta">
+      {artwork.technique} · {artwork.dimensions} · {artwork.year}
+    </p>
+    {isSold ? (
+      artwork.soldDate && <p class="card__sold-date muted">Vendida en {artwork.soldDate}</p>
+    ) : (
+      <a
+        class="btn card__cta"
+        href={whatsappLink(profile.whatsappNumber, artwork.title)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Consultar por esta obra
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--color-border);
+  }
+
+  .card__image-wrap {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--color-bg-alt);
+  }
+
+  .card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card--sold .card__image {
+    filter: grayscale(0.4);
+    opacity: 0.85;
+  }
+
+  .card__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .card__body {
+    padding: 18px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .card__title {
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .card__meta {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .card__sold-date {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+  }
+
+  .card__cta {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+</style>
